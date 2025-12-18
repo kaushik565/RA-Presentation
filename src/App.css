@@ -2508,6 +2508,27 @@ textarea {
     z-index: 5;
 }
 
+
+/* Centered splash for Quality Objectives */
+
+.qoCentered {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dc2626;
+    color: #ffffff;
+    z-index: 6;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.qoCenterTitle {
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
 .implementationSection {
     padding: 0;
     min-height: 100vh;
@@ -2516,6 +2537,7 @@ textarea {
     background: #ffffff;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    position: relative;
 }
 
 
@@ -2541,7 +2563,7 @@ textarea {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    background: #ffffff;
+    background: #dc2626;
     z-index: 2;
     animation: fadeIn 0.3s ease-out;
 }
@@ -2549,14 +2571,34 @@ textarea {
 .implCenterTitle {
     font-size: 56px;
     font-weight: 900;
-    color: #111827;
+    color: #ffffff;
     letter-spacing: 2px;
 }
 
 .implCenterDates {
     font-size: 22px;
-    color: #374151;
+    color: #ffffff;
     text-align: center;
+}
+
+.certSplash {
+    background: #dc2626 !important;
+    animation: splashFadeIn 0.3s ease-out;
+}
+
+.certSplash .implCenterTitle {
+    color: #ffffff !important;
+    font-size: 56px;
+    font-weight: 900;
+}
+
+@keyframes splashFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .implementationHeader {
@@ -2627,6 +2669,119 @@ textarea {
     width: 100%;
     max-height: 93vh;
     object-fit: contain;
+}
+
+
+/* Certifications slide */
+
+.certificationsSlide {
+    width: 100%;
+    height: 100%;
+    padding: 12px 24px 20px 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.certSubtitle {
+    font-size: 18px;
+    color: #000;
+}
+
+.certGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.certCard {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.certTop {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.certHeading {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 6px;
+}
+
+.certLogo {
+    height: 60px;
+    width: auto;
+}
+
+.certLogoLarge {
+    height: 80px;
+    width: auto;
+}
+
+.certImage {
+    width: 100%;
+    height: 55vh;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.certText {
+    margin-top: 10px;
+    text-align: center;
+    color: #000;
+}
+
+.certTitle {
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #000;
+}
+
+
+/* Thank You Page Styles */
+
+.thankYouPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: 40px;
+}
+
+.thankYouContent {
+    text-align: center;
+    max-width: 700px;
+}
+
+.thankYouTitle {
+    font-size: 72px;
+    font-weight: 900;
+    color: #dc2626;
+    margin: 0 0 24px 0;
+    letter-spacing: 2px;
+}
+
+.thankYouMessage {
+    font-size: 28px;
+    color: #374151;
+    margin: 0 0 16px 0;
+    font-weight: 600;
+}
+
+.thankYouSubMessage {
+    font-size: 20px;
+    color: #6b7280;
+    margin: 0;
 }
 
 .implGrid {
@@ -3029,6 +3184,20 @@ textarea {
     padding: 16px;
     background: #ffffff;
     box-shadow: 0 2px 8px rgba(2, 6, 23, 0.04);
+    position: relative;
+}
+
+.qoIndicatorBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #dc2626;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .qoIndicatorHeader {

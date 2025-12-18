@@ -1,4 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
+import slide3301 from '../scripts/_extracted/pptx-images/slide-33-01.jpg';
+import slide3302 from '../scripts/_extracted/pptx-images/slide-33-02.png';
+import slide3303 from '../scripts/_extracted/pptx-images/slide-33-03.png';
 import './App.css';
 
 function App() {
@@ -29,7 +32,9 @@ function App() {
   const [showBackButton, setShowBackButton] = useState(false);
   const [showImplIntro, setShowImplIntro] = useState(false);
   const [showImplMain, setShowImplMain] = useState(false);
-  const [currentImplImage, setCurrentImplImage] = useState(1);
+  const [currentImplImage, setCurrentImplImage] = useState(1); // 1: implementation1, 2: implementation2, 3: certifications slide
+  const [showCertIntro, setShowCertIntro] = useState(false);
+  const [showCertMain, setShowCertMain] = useState(false);
   const heroRef = useRef(null);
 
   // Track hero section visibility to show/hide back button
@@ -81,6 +86,21 @@ function App() {
     };
   }, []);
 
+  // Trigger Certificates intro when switching to step 3
+  useEffect(() => {
+    if (currentImplImage === 3) {
+      setShowCertIntro(true);
+      setShowCertMain(false);
+      setTimeout(() => {
+        setShowCertIntro(false);
+        setShowCertMain(true);
+      }, 500);
+    } else {
+      setShowCertIntro(false);
+      setShowCertMain(false);
+    }
+  }, [currentImplImage]);
+
   const goBack = () => {
     // Determine current section and scroll to previous
     const sections = [
@@ -94,18 +114,53 @@ function App() {
     ];
 
     // Find which section is currently visible
-    for (let i = sections.length - 1; i > 0; i--) {
+    for (let i = sections.length - 1; i >= 0; i--) {
       const section = sections[i].current;
       if (section) {
         const rect = section.getBoundingClientRect();
         if (rect.top <= 100 && rect.bottom >= 100) {
-          // If in implementation section and on image 2, go back to image 1
-          if (i === 6 && currentImplImage === 2) {
-            setCurrentImplImage(1);
-            return;
+          // If in implementation section, step back through images/slides first
+          if (i === 6) {
+            if (currentImplImage === 4) {
+              setCurrentImplImage(3);
+              return;
+            }
+            if (currentImplImage === 3) {
+              setCurrentImplImage(2);
+              return;
+            }
+            if (currentImplImage === 2) {
+              setCurrentImplImage(1);
+              return;
+            }
           }
-          // Scroll to previous section
-          sections[i - 1].current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // If in global registrations section, step back through images
+          if (i === 3) {
+            if (currentGlobalImage > 1) {
+              setCurrentGlobalImage(prev => prev - 1);
+              setShowAsiaTable(false);
+              setShowAfricaTable(false);
+              setShowNorthAmericaTable(false);
+              setShowSouthAmericaTable(false);
+              setShowEuropeTable(false);
+              return;
+            }
+          }
+          // If in WHO section, step within timelines before leaving the section
+          if (i === 4) {
+            if (activeWhoTimeline === 'rifex') {
+              // Go back to MTB Plus timeline
+              setActiveWhoTimeline('mtbplus');
+              // Ensure content is visible when stepping back
+              setShowWhoImageOnly(false);
+              setShowWhoContent(true);
+              return;
+            }
+          }
+          // Scroll to previous section if available
+          if (i - 1 >= 0) {
+            sections[i - 1].current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
           break;
         }
       }
@@ -130,10 +185,50 @@ function App() {
       if (section) {
         const rect = section.getBoundingClientRect();
         if (rect.top <= 100 && rect.bottom >= 100) {
-          // If in implementation section, cycle through images
-          if (i === 6 && currentImplImage === 1) {
-            setCurrentImplImage(2);
-            return;
+          // If in implementation section, cycle through implementation steps/images
+          if (i === 6) {
+            if (currentImplImage === 1) {
+              setCurrentImplImage(2);
+              return;
+            }
+            if (currentImplImage === 2) {
+              setCurrentImplImage(3);
+              return;
+            }
+            if (currentImplImage === 3) {
+              setCurrentImplImage(4);
+              return;
+            }
+            // Already at last page (Thank You), don't go forward
+            if (currentImplImage === 4) {
+              return;
+            }
+          }
+          // If in global registrations section, cycle through images
+          if (i === 3) {
+            if (currentGlobalImage < 6) {
+              setCurrentGlobalImage(prev => prev + 1);
+              setShowAsiaTable(false);
+              setShowAfricaTable(false);
+              setShowNorthAmericaTable(false);
+              setShowSouthAmericaTable(false);
+              setShowEuropeTable(false);
+              return;
+            }
+          }
+          // If in WHO section, control timeline via global navigation
+          if (i === 4) {
+            if (activeWhoTimeline === 'mtbplus') {
+              // Move to RIF Dx timeline instead of leaving the section
+              setActiveWhoTimeline('rifex');
+              return;
+            }
+            if (activeWhoTimeline === 'rifex' && showWhoImageOnly) {
+              // Reveal RIF Dx content if only image is showing
+              setShowWhoImageOnly(false);
+              setShowWhoContent(true);
+              return;
+            }
           }
           // Scroll to next section if not at last section
           if (i < sections.length - 1) {
@@ -229,6 +324,31 @@ function App() {
       setShowWhoContent(false);
     }
   }, [showWhoTimeline]);
+
+  // Quality Objectives: flash red for a moment when section becomes visible
+  useEffect(() => {
+    const qoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShowQualityFlash(true);
+            setTimeout(() => setShowQualityFlash(false), 500);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (qualityObjectivesRef.current) {
+      qoObserver.observe(qualityObjectivesRef.current);
+    }
+
+    return () => {
+      if (qualityObjectivesRef.current) {
+        qoObserver.unobserve(qualityObjectivesRef.current);
+      }
+    };
+  }, []);
 
   // Always start at top when opening any detail page/section
   useEffect(() => {
@@ -373,6 +493,8 @@ function App() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            // Reset to MTB Plus timeline whenever WHO section becomes visible
+            setActiveWhoTimeline('mtbplus');
             setShowWhoTimeline(false);
             setTimeout(() => {
               setShowWhoTimeline(true);
@@ -1249,8 +1371,6 @@ function App() {
             </div>
           ))}
         </div>
-
-        <button className="nextButton" onClick={scrollToProductLicensing}>Next →</button>
       </section>
 
       {/* Product Licensing Section */}
@@ -1280,7 +1400,6 @@ function App() {
             </div>
           )}
         </div>
-        <button className="nextButton" onClick={scrollToGlobalRegistrations}>Next →</button>
       </section>
 
       {/* Global Registrations Section */}
@@ -1313,34 +1432,28 @@ function App() {
             
             {/* White Body Section */}
             <div className="grBody">
-            <div className="grMapContainer">
-              <img 
-                src={
-                  currentGlobalImage === 1 
-                    ? "/Global regitrations/01.png" 
-                    : currentGlobalImage === 2 
-                    ? "/scripts/_extracted/pptx-images/slide-10-01.png"
-                    : currentGlobalImage === 3
-                    ? "/scripts/_extracted/pptx-images/slide-12-01.png"
-                    : currentGlobalImage === 4
-                    ? "/scripts/_extracted/pptx-images/slide-14-01.png"
-                    : currentGlobalImage === 5
-                    ? "/scripts/_extracted/pptx-images/slide-16-01.png"
-                    : "/scripts/_extracted/pptx-images/slide-18-01.png"
-                } 
-                alt="Global Registrations" 
-                className="grMapImage" 
-              />
-              <button 
-                className={currentGlobalImage === 6 ? "grImageToggleBtnLeft" : "grImageToggleBtn"} 
-                onClick={toggleGlobalImage}
-              >
-                {currentGlobalImage === 6 ? "←" : "→"}
-              </button>
-              
-              {/* Asia Registration Table */}
-              {showAsiaTable && currentGlobalImage === 2 && (
-                <div className="asiaTableContainer">
+              <div className="grMapContainer">
+                <img 
+                  src={
+                    currentGlobalImage === 1 
+                      ? "/Global regitrations/01.png" 
+                      : currentGlobalImage === 2 
+                      ? "/scripts/_extracted/pptx-images/slide-10-01.png"
+                      : currentGlobalImage === 3
+                      ? "/scripts/_extracted/pptx-images/slide-12-01.png"
+                      : currentGlobalImage === 4
+                      ? "/scripts/_extracted/pptx-images/slide-14-01.png"
+                      : currentGlobalImage === 5
+                      ? "/scripts/_extracted/pptx-images/slide-16-01.png"
+                      : "/scripts/_extracted/pptx-images/slide-18-01.png"
+                  } 
+                  alt="Global Registrations" 
+                  className="grMapImage" 
+                />
+                
+                {/* Asia Registration Table */}
+                {showAsiaTable && currentGlobalImage === 2 && (
+                  <div className="asiaTableContainer">
                   <table className="asiaTable">
                     <thead>
                       <tr>
@@ -1474,7 +1587,7 @@ function App() {
                   NEXT
                 </button>
               )}
-            </div>
+              </div>
             </div>
           </div>
         )}
@@ -1491,14 +1604,6 @@ function App() {
           
           {showWhoTimeline && (
             <div className="whoBodyContent">
-              {/* Toggle Button */}
-              <button
-                className={`whoTimelineToggleBtn ${activeWhoTimeline === 'rifex' ? 'leftAligned' : ''}`}
-                onClick={() => setActiveWhoTimeline(activeWhoTimeline === 'mtbplus' ? 'rifex' : 'mtbplus')}
-              >
-                {activeWhoTimeline === 'mtbplus' ? 'RIF Dx →' : '← MTB Plus'}
-              </button>
-
               {showWhoImageOnly && (
                 <div className="whoImageDisplayContainer">
                   <img src="/WHO/who.png" alt="WHO Logo" className="whoImageDisplay" />
@@ -1648,11 +1753,7 @@ function App() {
                   </div>
                 </div>
               )}
-              {activeWhoTimeline === 'rifex' && (
-                <button className="whoNextSectionBtn" onClick={scrollToQualityObjectives}>
-                  Next → Quality Objectives
-                </button>
-              )}
+              {/* Removed internal next button to enforce global navigation only */}
               </>
               )}
             </div>
@@ -1661,9 +1762,16 @@ function App() {
       </section>
 
       {/* Quality Objectives Section */}
-      <section className={`qualityObjectivesSection ${showQualityFlash ? 'flash' : ''}`} ref={qualityObjectivesRef}>
+      <section className="qualityObjectivesSection" ref={qualityObjectivesRef}>
         <div className="qualityObjectivesContainer">
-          <img src="/molbio-black-logo.png" alt="Molbio" className="qualityHeaderLogo" />
+          {showQualityFlash && (
+            <div className="qoCentered">
+              <div className="qoCenterTitle">Quality Objectives — 2025</div>
+            </div>
+          )}
+          {!showQualityFlash && (
+            <>
+            <img src="/molbio-black-logo.png" alt="Molbio" className="qualityHeaderLogo" />
           <div className="qualityObjectivesHeader">
             <h1 className="qualityObjectivesTitle">Quality Objectives — 2025</h1>
           </div>
@@ -1698,6 +1806,7 @@ function App() {
                     const progress = allocatedTotal ? Math.round((weightedCompleted / allocatedTotal) * 100) : 0;
                     return (
                       <div className="qoIndicator" key={idx}>
+                        <div className="qoIndicatorBadge">QI-{idx + 1}</div>
                         <div className="qoIndicatorHeader">
                           <h4 className="qoIndicatorTitle">{ind.name}</h4>
                           <div className="qoIndicatorPercent">{progress}%</div>
@@ -1728,6 +1837,8 @@ function App() {
               </div>
             )}
           </div>
+          </>
+          )}
         </div>
       </section>
 
@@ -1749,16 +1860,79 @@ function App() {
           </div>
         )}
 
-        {/* Main header + body after splash */}
-        {showImplMain && (
-          <>
-          <div className="implementationHeader">
-            <h1 className="implTitle">IMPLEMENTATION - July 2025 - December 2025</h1>
+        {/* Certificates centered splash for 0.5s */}
+        {showCertIntro && (
+          <div className="implCentered certSplash">
+            <div className="implCenterTitle">QMS CERTIFICATES - July 2025 - December 2025</div>
           </div>
+        )}
+
+        {/* Main header + body after splash */}
+        {showImplMain && !showCertIntro && (
+          <>
+            {currentImplImage !== 4 && (
+              <div className="implementationHeader">
+                <h1 className="implTitle">{currentImplImage === 3 ? 'QMS CERTIFICATES - July 2025 - December 2025' : 'IMPLEMENTATION - July 2025 - December 2025'}</h1>
+              </div>
+            )}
           <div className="implementationBody">
-            <div className="implImageWrap">
-              <img src={`/implementation${currentImplImage}.png`} alt="Implementation Overview" className="implBodyImage" />
-            </div>
+              {currentImplImage < 3 ? (
+                <div className="implImageWrap">
+                  <img src={`/implementation${currentImplImage}.png`} alt="Implementation Overview" className="implBodyImage" />
+                </div>
+              ) : showCertMain ? (
+                <div className="certificationsSlide">
+                  <div className="certIntro">
+                    <div className="certSubtitle">Successfully achieved QMS certificates</div>
+                  </div>
+                  <div className="certGrid">
+                    <div className="certCard">
+                      <div className="certHeading">MDSAP Certificate</div>
+                      <div className="certTop">
+                        <img src={slide3303} alt="MDSAP Logo" className="certLogo" />
+                      </div>
+                      <img src="/certtificates/MDSAP.png" alt="MDSAP Certificate" className="certImage" />
+                      <div className="certText">
+                        <div className="certTitle">MDSAP Certificate</div>
+                        <div>Valid from: 11/07/2025</div>
+                        <div>Valid until: 25/07/2026</div>
+                      </div>
+                    </div>
+
+                    <div className="certCard">
+                      <div className="certHeading">EU IVDR</div>
+                      <div className="certTop">
+                        <img src={slide3302} alt="EU IVDR Logo" className="certLogo" />
+                      </div>
+                      <img src="/certtificates/EVIVDR.png" alt="EU IVDR Certificate" className="certImage" />
+                      <div className="certText">
+                        <div className="certTitle">EU IVDR Certificate</div>
+                        <div>Valid from: 26/08/2025</div>
+                        <div>Valid until: 25/08/2030</div>
+                      </div>
+                    </div>
+
+                    <div className="certCard">
+                      <div className="certHeading">ISO 13485</div>
+                      <div className="certTop">
+                        <img src={slide3301} alt="ISO Logo" className="certLogo certLogoLarge" />
+                      </div>
+                      <img src="/certtificates/ISO.png" alt="ISO Certificate" className="certImage" />
+                      <div className="certText">
+                        <div className="certTitle">ISO Certificate</div>
+                        <div>Valid from: 09/07/2025</div>
+                        <div>Valid until: 26/04/2026</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : currentImplImage === 4 ? (
+                <div className="thankYouPage">
+                  <div className="thankYouContent">
+                    <h1 className="thankYouTitle">Thank You!</h1>
+                  </div>
+                </div>
+              ) : null}
           </div>
           </>
         )}
@@ -1770,9 +1944,11 @@ function App() {
           <button className="globalBackButton" onClick={goBack}>
             ←
           </button>
-          <button className="globalNextButton" onClick={goForward}>
-            →
-          </button>
+          {currentImplImage !== 4 && (
+            <button className="globalNextButton" onClick={goForward}>
+              →
+            </button>
+          )}
         </div>
       )}
     </div>

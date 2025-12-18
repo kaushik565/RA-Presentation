@@ -687,7 +687,6 @@ textarea {
     padding: 30px 40px;
     overflow-y: auto;
     /* Enable vertical scrolling for detail pages */
-    -webkit-overflow-scrolling: touch;
 }
 
 .detailHeader {

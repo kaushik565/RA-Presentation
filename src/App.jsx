@@ -26,6 +26,7 @@ function App() {
   const [showWhoImageOnly, setShowWhoImageOnly] = useState(false);
   const [showWhoContent, setShowWhoContent] = useState(false);
   const [activeWhoTimeline, setActiveWhoTimeline] = useState('mtbplus'); // 'mtbplus' or 'rifex'
+  const [whoNavLock, setWhoNavLock] = useState(false);
   const [showQualityFlash, setShowQualityFlash] = useState(false);
   const [activeQualityObj, setActiveQualityObj] = useState(null);
   const [showQualityDetail, setShowQualityDetail] = useState(false);
@@ -36,6 +37,23 @@ function App() {
   const [showCertIntro, setShowCertIntro] = useState(false);
   const [showCertMain, setShowCertMain] = useState(false);
   const heroRef = useRef(null);
+
+  const resetGlobalRegAnimation = () => {
+    setShowGlobalRegAnimation(false);
+    setTimeout(() => {
+      setShowGlobalRegAnimation(true);
+    }, 600);
+  };
+
+  const resetGlobalRegState = () => {
+    setCurrentGlobalImage(1);
+    setShowAsiaTable(false);
+    setShowAfricaTable(false);
+    setShowNorthAmericaTable(false);
+    setShowSouthAmericaTable(false);
+    setShowEuropeTable(false);
+    resetGlobalRegAnimation();
+  };
 
   // Track hero section visibility to show/hide back button
   useEffect(() => {
@@ -102,6 +120,16 @@ function App() {
   }, [currentImplImage]);
 
   const goBack = () => {
+        // If we're in a detail page view, exit it and stay in Product Licensing
+        if (showDetailPage) {
+          setShowDetailPage(false);
+          setActiveSection(null);
+          setTimeout(() => {
+            productLicensingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+          return;
+        }
+
     // Determine current section and scroll to previous
     const sections = [
       heroRef,
@@ -159,6 +187,11 @@ function App() {
           }
           // Scroll to previous section if available
           if (i - 1 >= 0) {
+            // Reset detail page view when moving away from Global Registrations back to Product Licensing
+            if (i === 3) {
+              setShowDetailPage(false);
+              setActiveSection(null);
+            }
             sections[i - 1].current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
           break;
@@ -168,6 +201,17 @@ function App() {
   };
 
   const goForward = () => {
+        // If we're in a detail page view, exit it and go to Global Registrations
+        if (showDetailPage) {
+          setShowDetailPage(false);
+          setActiveSection(null);
+          resetGlobalRegState();
+          setTimeout(() => {
+            globalRegistrationsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+          return;
+        }
+
     // Determine current section and scroll to next
     const sections = [
       heroRef,
@@ -215,23 +259,56 @@ function App() {
               setShowEuropeTable(false);
               return;
             }
+            // At last global image, prepare WHO timeline visibility
+            setActiveWhoTimeline('mtbplus');
+            setShowWhoTimeline(true);
           }
-          // If in WHO section, control timeline via global navigation
+          // If in WHO section, advance within WHO before leaving
           if (i === 4) {
+            if (whoNavLock) return;
+            setWhoNavLock(true);
+            setTimeout(() => setWhoNavLock(false), 400);
+            // Step 1: if on MTB Plus, switch to RIF Dx and stay
             if (activeWhoTimeline === 'mtbplus') {
-              // Move to RIF Dx timeline instead of leaving the section
               setActiveWhoTimeline('rifex');
+              setShowWhoTimeline(true);
+              setShowWhoImageOnly(true);
+              setShowWhoContent(false);
               return;
             }
+            // Step 2: if RIF Dx image is showing, reveal RIF Dx content and stay
             if (activeWhoTimeline === 'rifex' && showWhoImageOnly) {
-              // Reveal RIF Dx content if only image is showing
               setShowWhoImageOnly(false);
               setShowWhoContent(true);
               return;
             }
+            // Step 3: RIF Dx content already visible -> scroll to Quality Objectives
+            setActiveQualityObj(null);
+            setShowQualityDetail(false);
+            setShowQualityFlash(true);
+            setTimeout(() => setShowQualityFlash(false), 600);
+            setTimeout(() => {
+              qualityObjectivesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+            return;
           }
           // Scroll to next section if not at last section
           if (i < sections.length - 1) {
+            // Reset detail page view when leaving Product Licensing section
+            if (i === 2) {
+              setShowDetailPage(false);
+              setActiveSection(null);
+              resetGlobalRegState();
+            }
+            // Prime Implementation section when moving from Quality Objectives so it never renders blank
+            if (i === 5) {
+              setShowImplIntro(true);
+              setShowImplMain(false);
+              setCurrentImplImage(1);
+              setShowCertIntro(false);
+              setShowCertMain(false);
+              setTimeout(() => setShowImplMain(true), 500);
+            }
             sections[i + 1].current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
           break;
@@ -415,6 +492,8 @@ function App() {
   };
 
   const scrollToWhoTechnical = () => {
+    setActiveWhoTimeline('mtbplus');
+    setShowWhoTimeline(true);
     whoTechnicalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   };
 

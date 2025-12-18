@@ -2,9 +2,32 @@ import { useRef, useState, useEffect } from 'react';
 import slide3301 from '../scripts/_extracted/pptx-images/slide-33-01.jpg';
 import slide3302 from '../scripts/_extracted/pptx-images/slide-33-02.png';
 import slide3303 from '../scripts/_extracted/pptx-images/slide-33-03.png';
+import LoadingScreen from './components/LoadingScreen';
+import { useImagePreload } from './hooks/useImagePreload';
 import './App.css';
 
+// Critical images to preload for fast initial rendering
+const criticalImages = [
+  '/molbio-black-logo.png',
+  '/Global regitrations/01.png',
+  '/Global regitrations/02.png',
+  '/Global regitrations/03.png',
+  '/Global regitrations/04.png',
+  '/Global regitrations/05.png',
+  '/Global regitrations/06.png',
+  '/WHO/who.png',
+  '/implementation1.png',
+  '/implementation2.png',
+  '/certtificates/MDSAP.png',
+  '/certtificates/EVIVDR.png',
+  '/certtificates/ISO.png',
+  '/submitted image.jpg',
+];
+
 function App() {
+  // Preload critical images for fast rendering
+  const { imagesLoaded, loadProgress } = useImagePreload(criticalImages);
+
   const contentsRef = useRef(null);
   const productLicensingRef = useRef(null);
   const globalRegistrationsRef = useRef(null);
@@ -1461,6 +1484,8 @@ function App() {
 
   return (
     <div className="singlePageLayout">
+      {/* Global loading overlay (fixed, covers entire app while images preload) */}
+      {!imagesLoaded && <LoadingScreen progress={loadProgress} />}
       {/* Hero Section */}
       <section className="heroSection" ref={heroRef}>
         <div className="heroLeft">

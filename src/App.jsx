@@ -1438,14 +1438,14 @@ function App() {
                     currentGlobalImage === 1 
                       ? "/Global regitrations/01.png" 
                       : currentGlobalImage === 2 
-                      ? "/scripts/_extracted/pptx-images/slide-10-01.png"
+                      ? "/Global regitrations/02.png"
                       : currentGlobalImage === 3
-                      ? "/scripts/_extracted/pptx-images/slide-12-01.png"
+                      ? "/Global regitrations/03.png"
                       : currentGlobalImage === 4
-                      ? "/scripts/_extracted/pptx-images/slide-14-01.png"
+                      ? "/Global regitrations/04.png"
                       : currentGlobalImage === 5
-                      ? "/scripts/_extracted/pptx-images/slide-16-01.png"
-                      : "/scripts/_extracted/pptx-images/slide-18-01.png"
+                      ? "/Global regitrations/05.png"
+                      : "/Global regitrations/06.png"
                   } 
                   alt="Global Registrations" 
                   className="grMapImage" 

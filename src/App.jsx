@@ -256,6 +256,33 @@ function App() {
     { id: 4, title: 'Manufacturing License Status' }
   ];
 
+  // Contents section - reset animation every time section comes into view
+  useEffect(() => {
+    const contentsObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShowSections(false);
+            setTimeout(() => {
+              setShowSections(true);
+            }, 500);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (contentsRef.current) {
+      contentsObserver.observe(contentsRef.current);
+    }
+
+    return () => {
+      if (contentsRef.current) {
+        contentsObserver.unobserve(contentsRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -359,7 +386,24 @@ function App() {
   }, [showDetailPage, activeSection]);
 
   const scrollToContents = () => {
-    contentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+    // Enter fullscreen
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+        .then(() => {
+          // Wait for fullscreen transition to complete, then scroll
+          setTimeout(() => {
+            contentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+          }, 300);
+        })
+        .catch(err => {
+          console.log('Fullscreen request failed:', err);
+          // If fullscreen fails, still navigate
+          contentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+        });
+    } else {
+      // Already in fullscreen, just navigate
+      contentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+    }
   };
 
   const scrollToProductLicensing = () => {
@@ -1306,7 +1350,7 @@ function App() {
               ))}
               {licenseData.submitted[licenseData.submitted.length - 1].category === 'Total' && (
                 <div className="statusBadge">
-                  <img src="https://img.icons8.com/color/96/000000/submit-document.png" alt="Submitted" className="badgeIcon" />
+                  <img src="/submitted image.jpg" alt="Submitted" className="badgeIcon" />
                 </div>
               )}
             </div>
@@ -1361,8 +1405,8 @@ function App() {
         </div>
         
         <div className="contentsGrid">
-          {contentItems.map((item) => (
-            <div key={item.id} className={`contentItem ${item.color}`}>
+          {contentItems.map((item, idx) => (
+            <div key={item.id} className={`contentItem ${item.color} ${showSections ? 'reveal' : ''}`} style={{ animationDelay: `${idx * 0.15}s` }}>
               <div className="itemNumber">{item.id}</div>
               <div className="itemContent">
                 <h3>{item.title}</h3>

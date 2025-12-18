@@ -177,24 +177,47 @@ html {
 
 .contentsGrid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 15px;
     flex: 1;
     overflow: hidden;
+    max-width: 700px;
+    margin: 0;
+    justify-self: start;
 }
 
 .contentItem {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 80px 1fr;
     gap: 0;
     border-radius: 6px;
     overflow: hidden;
     border: 3px solid;
     transition: transform 0.2s;
+    max-height: 100px;
+    opacity: 0;
+}
+
+.contentItem.reveal {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .contentItem:hover {
-    transform: translateX(5px);
+    transform: translateX(8px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    filter: brightness(1.1);
 }
 
 .contentItem.blue {
@@ -266,14 +289,14 @@ html {
 }
 
 .itemContent h3 {
-    font-size: 15px;
+    font-size: 22px;
     font-weight: 700;
     color: #000;
     margin: 0 0 6px 0;
 }
 
 .itemContent p {
-    font-size: 12px;
+    font-size: 16px;
     color: #666;
     margin: 0;
     line-height: 1.3;
@@ -471,6 +494,7 @@ textarea {
     flex-direction: column;
     gap: 20px;
     max-width: 600px;
+    margin-right: 150px;
 }
 
 .licensingSection {
@@ -482,9 +506,11 @@ textarea {
     align-items: center;
     gap: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s;
+    transition: all 0.3s ease;
     opacity: 0;
     animation: fadeInUp 0.6s ease-out forwards;
+    cursor: pointer;
+    border: 2px solid transparent;
 }
 
 @keyframes fadeInUp {
@@ -499,7 +525,17 @@ textarea {
 }
 
 .licensingSection:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 12px 24px rgba(220, 38, 38, 0.4);
+    border-color: #dc2626;
+    background: linear-gradient(135deg, #ffffff 0%, #fee2e2 100%);
+}
+
+.licensingSection:hover .sectionNumber {
+    background: #dc2626;
+    color: white;
+    transform: rotate(360deg);
+    transition: all 0.5s ease;
 }
 
 .sectionNumber {
@@ -514,6 +550,7 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.5s ease;
 }
 
 .licensingSection h3 {
@@ -1143,173 +1180,317 @@ textarea {
 /* Manufacturing License Status Styles (Section 4) */
 
 .mlStatusPage .detailContent {
-    background: white;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: 30px;
 }
 
 .mlGrid {
     display: grid;
-    grid-template-columns: 1.1fr 1.2fr 1fr 1.2fr;
-    gap: 20px;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 25px;
+    align-items: start;
 }
 
 .mlCol {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
 .mlPanel {
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
+    border: none;
+    border-radius: 16px;
     overflow: hidden;
     background: #fff;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.mlPanel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+}
+
+.mlPanel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mlPanel:hover::before {
+    opacity: 1;
 }
 
 .mlPanelHeader {
-    padding: 12px 16px;
+    padding: 18px 20px;
     font-weight: 800;
-    color: #0f172a;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.mlPanelHeader::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -50%;
+    width: 50%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewX(-20deg);
 }
 
 .mlPanel.cyan .mlPanelHeader {
-    background: linear-gradient(135deg, #7dd3fc, #38bdf8);
-    color: #032d40;
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: #fff;
 }
 
 .mlPanel.orange .mlPanelHeader {
-    background: linear-gradient(135deg, #fdba74, #f97316);
-    color: #4a1d05;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: #fff;
 }
 
 .mlPanel.amber .mlPanelHeader {
-    background: linear-gradient(135deg, #fde68a, #f59e0b);
-    color: #422006;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #fff;
 }
 
 .mlCount {
     font-weight: 900;
-    color: rgba(0, 0, 0, 0.7);
+    font-size: 20px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    min-width: 40px;
+    text-align: center;
 }
 
 .mlList {
     list-style: none;
     margin: 0;
-    padding: 10px 12px;
+    padding: 16px;
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.mlList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mlList::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.mlList::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.mlList::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 .mlList li {
-    padding: 10px 12px;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border-radius: 8px;
     font-weight: 600;
+    font-size: 13px;
     color: #0f172a;
+    background: #f8fafc;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+    padding-left: 30px;
+}
+
+.mlList li::before {
+    content: '▸';
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.mlList li:hover {
+    background: #e0f2fe;
+    border-left-color: #0ea5e9;
+    transform: translateX(5px);
+}
+
+.mlList li:hover::before {
+    color: #0ea5e9;
+    left: 16px;
 }
 
 .mlList li:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
 }
 
 .mlList.compact li {
-    padding: 8px 10px;
+    padding: 10px 12px 10px 28px;
     font-weight: 700;
+    font-size: 13px;
 }
 
 .mlCenter {
-    gap: 16px;
+    gap: 20px;
 }
 
 .mlChartCard {
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    border: none;
+    border-radius: 16px;
     background: #fff;
-    padding: 16px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+}
+
+.mlChartCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
 }
 
 .mlChartTitle {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     color: #0f172a;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .mlPie {
-    width: 260px;
-    height: 260px;
+    width: 240px;
+    height: 240px;
     border-radius: 50%;
-    margin: 16px auto;
+    margin: 20px auto;
     position: relative;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.mlPie:hover {
+    transform: scale(1.05);
 }
 
 .mlPieHub {
     position: absolute;
     inset: 50% auto auto 50%;
     transform: translate(-50%, -50%);
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    background: #fff;
-    border: 5px solid #e5e7eb;
+    background: linear-gradient(135deg, #fff 0%, #f0f9ff 100%);
+    border: 6px solid #e0f2fe;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 900;
-    color: #0ea5e9;
-    font-size: 24px;
+    color: #0284c7;
+    font-size: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .mlLegend {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 12px;
-    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.mlLegend>div {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: #000;
+    font-weight: 600;
+}
+
+.mlLegend>div:hover {
+    background: #e0f2fe;
+    transform: translateX(5px);
 }
 
 .mlLegend .sw {
     display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    margin-right: 8px;
-    vertical-align: -2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mlLegend b {
+    margin-left: auto;
+    font-size: 16px;
+    color: #000;
+    font-weight: 700;
 }
 
 .mlBuckets {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .mlBucket {
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
+    border: none;
+    border-radius: 16px;
     background: #fff;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.mlBucket:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
 .mlBucket .mlBucketHeader {
-    padding: 10px 12px;
+    padding: 14px 16px;
     font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    color: #fff;
 }
 
 .mlBucket.sky .mlBucketHeader {
-    background: linear-gradient(135deg, #bae6fd, #7dd3fc);
-    color: #0c4a6e;
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: #fff;
 }
 
 .mlBucket.slate .mlBucketHeader {
-    background: linear-gradient(135deg, #cbd5e1, #94a3b8);
-    color: #0f172a;
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    color: #fff;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
     .mlGrid {
+        grid-template-columns: 1fr;
+    }
+    .mlBuckets {
+        display: grid;
         grid-template-columns: 1fr 1fr;
     }
 }
@@ -1317,9 +1498,19 @@ textarea {
 @media (max-width: 768px) {
     .mlGrid {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
-    .mlLegend {
+    .mlBuckets {
         grid-template-columns: 1fr;
+    }
+    .mlPie {
+        width: 200px;
+        height: 200px;
+    }
+    .mlPieHub {
+        width: 80px;
+        height: 80px;
+        font-size: 22px;
     }
     .mlPie {
         width: 220px;

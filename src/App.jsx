@@ -1219,7 +1219,7 @@ function App() {
       no: '04',
       name: 'Truepoc',
       desc: 'Integrated point-of-care NAAT platform',
-      note: '(Awaiting product details)'
+      note: '(Application under process)'
     },
     {
       no: '05',
@@ -1236,8 +1236,8 @@ function App() {
     {
       no: '07',
       name: 'Trueamp CureDx-TB',
-      desc: 'RT-PCR assay for qualitative assessment of host-response mRNA biomarkers associated with Mycobacterium tuberculosis infection',
-      note: '(Awaiting finalised product details)'
+      desc: 'Real-time reverse transcription polymerase chain reaction (RT-PCR) assay for the qualitative assessment of host-response mRNA biomarkers associated with Mycobacterium tuberculosis infection',
+      note: '(Application under process)'
     },
     {
       no: '08',

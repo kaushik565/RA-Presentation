@@ -1422,66 +1422,24 @@ function App() {
         </div>
 
         <div className="detailContent">
-          <div className="mlChartRow">
-            <div className="mlChartCard">
-              <div className="mlChartTitle">Status</div>
-              <div className="mlChartLayout">
-                <div className="mlPie" style={{ background: `conic-gradient(${gradient})` }}>
-                  <div className="mlPieHub">{total}</div>
-                </div>
-                <div className="mlStatusList">
-                  <div className="mlStatusItem">
-                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.design}} />Design Transfer File</span>
-                    <span className="mlStatusItemValue">{counts.design}</span>
-                  </div>
-                  <div className="mlStatusItem">
-                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.clinical}} />Clinical Evaluation</span>
-                    <span className="mlStatusItemValue">{counts.clinical}</span>
-                  </div>
-                  <div className="mlStatusItem">
-                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.stability}} />Stability Study</span>
-                    <span className="mlStatusItemValue">{counts.stability}</span>
-                  </div>
-                  <div className="mlStatusItem">
-                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.lots}} />Lots not taken</span>
-                    <span className="mlStatusItemValue">{counts.lots}</span>
-                  </div>
-                  <div className="mlStatusItem">
-                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.internal}} />Internal Validation</span>
-                    <span className="mlStatusItemValue">{counts.internal}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          {/* Table at top */}
           <div className="mlBottomGrid">
-            {/* Lots not taken */}
-            <div className="mlCol">
-              <div className="mlPanel amber">
-                <div className="mlPanelHeader">LOTS NOT TAKEN <span className="mlCount">{mlStatus.lotsNotTaken.length}</span></div>
-                <ul className="mlList">
-                  {mlStatus.lotsNotTaken.map((t, i) => <li key={i}>{t}</li>)}
-                </ul>
-              </div>
-            </div>
-
-            {/* Clinical Evaluation */}
-            <div className="mlCol">
-              <div className="mlPanel orange">
-                <div className="mlPanelHeader">CLINICAL EVALUATION <span className="mlCount">{mlStatus.clinicalEvaluation.length}</span></div>
-                <ul className="mlList">
-                  {mlStatus.clinicalEvaluation.map((t, i) => <li key={i}>{t}</li>)}
-                </ul>
-              </div>
-            </div>
-
             {/* Design File */}
             <div className="mlCol">
               <div className="mlPanel cyan">
                 <div className="mlPanelHeader">DESIGN FILE <span className="mlCount">{mlStatus.designFile.length}</span></div>
                 <ul className="mlList">
                   {mlStatus.designFile.map((t, i) => <li key={i}>{t}</li>)}
+                </ul>
+              </div>
+            </div>
+
+            {/* Lots not taken */}
+            <div className="mlCol">
+              <div className="mlPanel amber">
+                <div className="mlPanelHeader">LOTS NOT TAKEN <span className="mlCount">{mlStatus.lotsNotTaken.length}</span></div>
+                <ul className="mlList">
+                  {mlStatus.lotsNotTaken.map((t, i) => <li key={i}>{t}</li>)}
                 </ul>
               </div>
             </div>
@@ -1501,6 +1459,50 @@ function App() {
                     <ul className="mlList compact">
                       {mlStatus.stability.map((t, i) => <li key={i}>{t}</li>)}
                     </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Evaluation */}
+            <div className="mlCol">
+              <div className="mlPanel orange">
+                <div className="mlPanelHeader">CLINICAL EVALUATION <span className="mlCount">{mlStatus.clinicalEvaluation.length}</span></div>
+                <ul className="mlList">
+                  {mlStatus.clinicalEvaluation.map((t, i) => <li key={i}>{t}</li>)}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Chart at bottom */}
+          <div className="mlChartRow">
+            <div className="mlChartCard">
+              <div className="mlChartTitle">Status</div>
+              <div className="mlChartLayout">
+                <div className="mlPie" style={{ background: `conic-gradient(${gradient})` }}>
+                  <div className="mlPieHub">{total}</div>
+                </div>
+                <div className="mlStatusList">
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.design}} />Design File</span>
+                    <span className="mlStatusItemValue">{counts.design}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.lots}} />Lots</span>
+                    <span className="mlStatusItemValue">{counts.lots}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.internal}} />Internal Validation</span>
+                    <span className="mlStatusItemValue">{counts.internal}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.stability}} />Stability</span>
+                    <span className="mlStatusItemValue">{counts.stability}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.clinical}} />Clinical</span>
+                    <span className="mlStatusItemValue">{counts.clinical}</span>
                   </div>
                 </div>
               </div>
@@ -1970,7 +1972,7 @@ function App() {
                     <div className="whoPhaseContentHorizontal">
                       <ul className="whoPhaseTasksListHorizontal">
                         <li><span className="whoTaskBullet"></span>1st Dossier Screening of WHO received (5/12/2025)</li>
-                        <li><span className="whoTaskBullet"></span>Coordinating for data as per screening review</li>
+                        <li><span className="whoTaskBullet"></span>Review provided by WHO PreQ team is corrected, awaiting CAP1 from WHO Team If any.</li>
                       </ul>
                     </div>
                   </div>

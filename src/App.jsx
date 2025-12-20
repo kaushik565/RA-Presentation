@@ -60,6 +60,7 @@ function App() {
   const [showCertIntro, setShowCertIntro] = useState(false);
   const [showCertMain, setShowCertMain] = useState(false);
   const heroRef = useRef(null);
+  const fullscreenTargetRef = useRef(null);
 
   const resetGlobalRegAnimation = () => {
     setShowGlobalRegAnimation(false);
@@ -291,21 +292,18 @@ function App() {
             if (whoNavLock) return;
             setWhoNavLock(true);
             setTimeout(() => setWhoNavLock(false), 400);
-            // Step 1: if on MTB Plus, switch to RIF Dx and stay
+            // Step 1: if on MTB Plus, switch to RIF Dx and show content
             if (activeWhoTimeline === 'mtbplus') {
               setActiveWhoTimeline('rifex');
               setShowWhoTimeline(true);
-              setShowWhoImageOnly(true);
-              setShowWhoContent(false);
-              return;
-            }
-            // Step 2: if RIF Dx image is showing, reveal RIF Dx content and stay
-            if (activeWhoTimeline === 'rifex' && showWhoImageOnly) {
               setShowWhoImageOnly(false);
               setShowWhoContent(true);
               return;
             }
-            // Step 3: RIF Dx content already visible -> scroll to Quality Objectives
+            // Step 2: RIF Dx content is visible -> move to Quality Objectives
+            setShowWhoTimeline(false);
+            setShowWhoImageOnly(false);
+            setShowWhoContent(false);
             setActiveQualityObj(null);
             setShowQualityDetail(false);
             setShowQualityFlash(true);
@@ -436,16 +434,12 @@ function App() {
     };
   }, []);
 
-  // WHO Technical Dossier - Show image for 3 seconds then content
+  // WHO Technical Dossier - Show content directly without image
   useEffect(() => {
     if (showWhoTimeline) {
-      setShowWhoImageOnly(true);
-      setShowWhoContent(false);
-      const timer = setTimeout(() => {
-        setShowWhoImageOnly(false);
-        setShowWhoContent(true);
-      }, 3000);
-      return () => clearTimeout(timer);
+      setShowWhoImageOnly(false);
+      setShowWhoContent(true);
+      return () => {};
     } else {
       setShowWhoImageOnly(false);
       setShowWhoContent(false);
@@ -484,6 +478,100 @@ function App() {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }
   }, [showDetailPage, activeSection]);
+
+  // Keyboard navigation with arrow keys
+  useEffect(() => {
+    const captureCurrentSection = () => {
+      const sections = [
+        heroRef,
+        contentsRef,
+        productLicensingRef,
+        globalRegistrationsRef,
+        whoTechnicalRef,
+        qualityObjectivesRef,
+        implementationRef
+      ];
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i].current;
+        if (!section) continue;
+        const rect = section.getBoundingClientRect();
+        const anchor = window.innerHeight * 0.4;
+        if (rect.top <= anchor && rect.bottom >= anchor) {
+          return section;
+        }
+      }
+      return null;
+    };
+
+    const handleKeyDown = (event) => {
+      // Toggle fullscreen with 'F'
+      if (event.key === 'f' || event.key === 'F') {
+        event.preventDefault();
+        // remember which section is visible before toggling
+        fullscreenTargetRef.current = captureCurrentSection();
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+        return;
+      }
+
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        goForward();
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        goBack();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [goForward, goBack]);
+
+  // Keep the current section aligned when entering or exiting fullscreen
+  useEffect(() => {
+    const alignCurrentSection = () => {
+      if (fullscreenTargetRef.current) {
+        fullscreenTargetRef.current.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+        fullscreenTargetRef.current = null;
+        return;
+      }
+      const sections = [
+        heroRef,
+        contentsRef,
+        productLicensingRef,
+        globalRegistrationsRef,
+        whoTechnicalRef,
+        qualityObjectivesRef,
+        implementationRef
+      ];
+
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i].current;
+        if (!section) continue;
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 200 && rect.bottom >= 200) {
+          section.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+          break;
+        }
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      // Wait for layout to settle before aligning
+      requestAnimationFrame(() => alignCurrentSection());
+      setTimeout(() => alignCurrentSection(), 120);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   const scrollToContents = () => {
     // Enter fullscreen
@@ -530,8 +618,13 @@ function App() {
   };
 
   const openQualityDetail = (obj) => {
-    setActiveQualityObj(obj);
-    setShowQualityDetail(true);
+    // Toggle: if clicking the same objective, close it
+    if (activeQualityObj && activeQualityObj.number === obj.number) {
+      closeQualityDetail();
+    } else {
+      setActiveQualityObj(obj);
+      setShowQualityDetail(true);
+    }
   };
 
   const closeQualityDetail = () => {
@@ -994,14 +1087,6 @@ function App() {
           ],
         },
         {
-          name: 'Truenat® MTB-INH under IVDR, 2017',
-          tasks: [
-            { id: 'T1', name: 'Technical Dossier preparation', allocated: 70, status: 'Ongoing', completed: 40 },
-            { id: 'T2', name: 'Technical Dossier review by stakeholders', allocated: 15, status: 'Ongoing', completed: 0 },
-            { id: 'T3', name: 'Technical Dossier submission to Notified Body', allocated: 15, status: 'Ongoing', completed: 0 },
-          ],
-        },
-        {
           name: 'Truenat® HCV under IVDR, 2017',
           tasks: [
             { id: 'T1', name: 'Technical Dossier preparation', allocated: 70, status: 'Ongoing', completed: 75 },
@@ -1319,6 +1404,15 @@ function App() {
       return [s1, s2, s3, s4, s5].join(', ');
     })();
 
+    const statusItems = [
+      { label: 'Status', value: total },
+      { label: 'Design Transfer File', value: counts.design },
+      { label: 'Clinical Evaluation', value: counts.clinical },
+      { label: 'Stability Study', value: counts.stability },
+      { label: 'Lots not taken', value: counts.lots },
+      { label: 'Internal Validation', value: counts.internal }
+    ];
+
     return (
       <div className="detailPage mlStatusPage">
         <div className="detailHeader">
@@ -1328,46 +1422,47 @@ function App() {
         </div>
 
         <div className="detailContent">
-          <div className="mlGrid">
-            {/* Left column: Lots not taken */}
-            <div className="mlCol">
-              <div className="mlPanel amber">
-                <div className="mlPanelHeader">LOTS (0{Math.max(3, Math.min(9, 3))}) NOT TAKEN <span className="mlCount">{mlStatus.lotsNotTaken.length}</span></div>
-                <ul className="mlList">
-                  {mlStatus.lotsNotTaken.map((t, i) => <li key={i}>{t}</li>)}
-                </ul>
-              </div>
-            </div>
-
-            {/* Center: Pie + Internal Validation + Stability */}
-            <div className="mlCol mlCenter">
-              <div className="mlChartCard">
-                <div className="mlChartTitle">Status</div>
+          <div className="mlChartRow">
+            <div className="mlChartCard">
+              <div className="mlChartTitle">Status</div>
+              <div className="mlChartLayout">
                 <div className="mlPie" style={{ background: `conic-gradient(${gradient})` }}>
                   <div className="mlPieHub">{total}</div>
                 </div>
-                <div className="mlLegend">
-                  <div><span className="sw" style={{background: colors.design}} /> Design Transfer File <b>{counts.design}</b></div>
-                  <div><span className="sw" style={{background: colors.clinical}} /> Clinical Evaluation <b>{counts.clinical}</b></div>
-                  <div><span className="sw" style={{background: colors.stability}} /> Stability Study <b>{counts.stability}</b></div>
-                  <div><span className="sw" style={{background: colors.lots}} /> Lots not taken <b>{counts.lots}</b></div>
-                  <div><span className="sw" style={{background: colors.internal}} /> Internal Validation <b>{counts.internal}</b></div>
+                <div className="mlStatusList">
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.design}} />Design Transfer File</span>
+                    <span className="mlStatusItemValue">{counts.design}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.clinical}} />Clinical Evaluation</span>
+                    <span className="mlStatusItemValue">{counts.clinical}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.stability}} />Stability Study</span>
+                    <span className="mlStatusItemValue">{counts.stability}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.lots}} />Lots not taken</span>
+                    <span className="mlStatusItemValue">{counts.lots}</span>
+                  </div>
+                  <div className="mlStatusItem">
+                    <span className="mlStatusItemLabel"><span className="sw" style={{background: colors.internal}} />Internal Validation</span>
+                    <span className="mlStatusItemValue">{counts.internal}</span>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="mlBuckets">
-                <div className="mlBucket sky">
-                  <div className="mlBucketHeader">Internal Validation</div>
-                  <ul className="mlList compact">
-                    {mlStatus.internalValidation.map((t, i) => <li key={i}>{t}</li>)}
-                  </ul>
-                </div>
-                <div className="mlBucket slate">
-                  <div className="mlBucketHeader">Stability</div>
-                  <ul className="mlList compact">
-                    {mlStatus.stability.map((t, i) => <li key={i}>{t}</li>)}
-                  </ul>
-                </div>
+          <div className="mlBottomGrid">
+            {/* Lots not taken */}
+            <div className="mlCol">
+              <div className="mlPanel amber">
+                <div className="mlPanelHeader">LOTS NOT TAKEN <span className="mlCount">{mlStatus.lotsNotTaken.length}</span></div>
+                <ul className="mlList">
+                  {mlStatus.lotsNotTaken.map((t, i) => <li key={i}>{t}</li>)}
+                </ul>
               </div>
             </div>
 
@@ -1388,6 +1483,26 @@ function App() {
                 <ul className="mlList">
                   {mlStatus.designFile.map((t, i) => <li key={i}>{t}</li>)}
                 </ul>
+              </div>
+            </div>
+
+            {/* Internal Validation & Stability */}
+            <div className="mlCol">
+              <div className="mlPanel slate">
+                <div className="mlVerticalList">
+                  <div className="mlBucket sky">
+                    <div className="mlBucketHeader">Internal Validation <span className="mlCount">{mlStatus.internalValidation.length}</span></div>
+                    <ul className="mlList compact">
+                      {mlStatus.internalValidation.map((t, i) => <li key={i}>{t}</li>)}
+                    </ul>
+                  </div>
+                  <div className="mlBucket slateDark">
+                    <div className="mlBucketHeader">Stability Study <span className="mlCount">{mlStatus.stability.length}</span></div>
+                    <ul className="mlList compact">
+                      {mlStatus.stability.map((t, i) => <li key={i}>{t}</li>)}
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1527,11 +1642,49 @@ function App() {
           <img src="/molbio-black-logo.png" alt="Molbio" className="headerLogo" />
         </div>
         <div className={`productLicensingLayout ${showSections ? 'splitView' : ''}`}>
-          <div className="productContent">
-            <h1 className="productTitle">Product Licensing</h1>
-            <p className="productSubtitle">Central and State Licensing Authority</p>
-            <p className="productDate">July 2025 - December 2025</p>
+          <div className="productLeftColumn">
+            <div className="productContent">
+              <h1 className="productTitle">Product Licensing</h1>
+              <p className="productSubtitle">Central and State Licensing Authority</p>
+              <p className="productDate">July 2025 - December 2025</p>
+            </div>
+            
+            {/* KPI Overview Cards below the text */}
+            {showSections && (
+              <div className="plKpiOverview">
+                <div className="plKpiCard" style={{ animationDelay: '0.8s' }}>
+                  <div className="plKpiIcon">📋</div>
+                  <div className="plKpiContent">
+                    <div className="plKpiValue">24</div>
+                    <div className="plKpiLabel">Approvals & Submissions</div>
+                  </div>
+                </div>
+                <div className="plKpiCard" style={{ animationDelay: '0.95s' }}>
+                  <div className="plKpiIcon">⏳</div>
+                  <div className="plKpiContent">
+                    <div className="plKpiValue">12</div>
+                    <div className="plKpiLabel">Inprocess Applications</div>
+                  </div>
+                </div>
+                <div className="plKpiCard" style={{ animationDelay: '1.1s' }}>
+                  <div className="plKpiIcon">🔬</div>
+                  <div className="plKpiContent">
+                    <div className="plKpiValue">8</div>
+                    <div className="plKpiLabel">Products in Pipeline</div>
+                  </div>
+                </div>
+                <div className="plKpiCard" style={{ animationDelay: '1.25s' }}>
+                  <div className="plKpiIcon">✓</div>
+                  <div className="plKpiContent">
+                    <div className="plKpiValue">18</div>
+                    <div className="plKpiLabel">Manufacturing Licenses</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+          
+          {/* Section Navigation Buttons */}
           {showSections && (
             <div className="licensingSectionsGrid">
               {licensingSections.map((section, index) => (
@@ -1577,6 +1730,32 @@ function App() {
             
             {/* Divider */}
             <div className="grDivider" />
+            
+            {/* South America Table - Top Right Corner (only when South America slide is active) */}
+            {currentGlobalImage === 5 && showSouthAmericaTable && (
+              <div className="southAmericaTopRightTable">
+                <table className="southAmericaQuickTable">
+                  <thead>
+                    <tr>
+                      <th>Country</th>
+                      <th>Regulator</th>
+                      <th>Registered</th>
+                      <th>Ongoing</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {southAmericaRegistrationData.map((row, idx) => (
+                      <tr key={idx}>
+                        <td>{row.country}</td>
+                        <td>{row.regulator}</td>
+                        <td>{row.registered}</td>
+                        <td>{row.ongoing}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
             
             {/* White Body Section */}
             <div className="grBody">
@@ -1677,31 +1856,6 @@ function App() {
                 </div>
               )}
               
-              {/* South America Registration Table */}
-              {showSouthAmericaTable && currentGlobalImage === 5 && (
-                <div className="southAmericaTableContainer">
-                  <table className="southAmericaTable">
-                    <thead>
-                      <tr>
-                        <th>Country</th>
-                        <th>Regulator</th>
-                        <th>No. of products registered</th>
-                        <th>No. of products (Registration Ongoing)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {southAmericaRegistrationData.map((row, idx) => (
-                        <tr key={idx}>
-                          <td>{row.country}</td>
-                          <td>{row.regulator}</td>
-                          <td>{row.registered}</td>
-                          <td>{row.ongoing}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
               
               {/* Europe Registration Table */}
               {showEuropeTable && currentGlobalImage === 6 && (
@@ -1939,6 +2093,53 @@ function App() {
                 </button>
               ))}
             </div>
+
+            {/* Overview cards when nothing is selected */}
+            {!activeQualityObj && (
+              <div className="qoOverviewSection">
+                <h2 className="qoOverviewTitle">Overview</h2>
+                <div className="qoOverviewGrid">
+                  {qualityObjectives.map((obj) => {
+                    const metrics = getObjectiveMetrics(obj);
+                    return (
+                      <div className="qoOverviewCard" key={obj.number}>
+                        <div className="qoOverviewHeader">
+                          <span className="qoBadge">Objective {obj.number}</span>
+                          <div className="qoOverviewProgress">{metrics.overallProgress}%</div>
+                        </div>
+                        <div className="qoOverviewStats">
+                          <div className="qoOverviewStat">
+                            <div className="qoOverviewStatValue">{metrics.totalTasks}</div>
+                            <div className="qoOverviewStatLabel">Total Tasks</div>
+                          </div>
+                          <div className="qoOverviewStat">
+                            <div className="qoOverviewStatValue">{metrics.completedTasks}</div>
+                            <div className="qoOverviewStatLabel">Completed</div>
+                          </div>
+                          <div className="qoOverviewStat">
+                            <div className="qoOverviewStatValue">{metrics.ongoingTasks}</div>
+                            <div className="qoOverviewStatLabel">Ongoing</div>
+                          </div>
+                        </div>
+                        <div className="qoProgress">
+                          <div className="progressTrack">
+                            <div className="progressFill" style={{ width: `${metrics.overallProgress}%` }} />
+                          </div>
+                        </div>
+                        <div className="qoOverviewIndicators">
+                          {obj.indicators.map((ind, idx) => (
+                            <div className="qoOverviewIndicator" key={idx}>
+                              <span className="qoOverviewIndicatorName">QI-{idx + 1}: {ind.name.split(' ')[0]}...</span>
+                              <span className="qoOverviewIndicatorPercent">{metrics.indicatorProgress[idx]}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Show details below if a card is clicked */}
             {activeQualityObj && (

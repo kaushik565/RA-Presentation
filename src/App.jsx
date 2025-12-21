@@ -885,11 +885,8 @@ function App() {
       'Truetell™/Promilless™ 0.05%'
     ],
     clinicalEvaluation: [
-      'Truenat® MTB Ultima',
-      'Truenat® HPV HR 16/18',
       'Truenat® Zika',
       'Truenat® Brucella',
-      'Truenat® RSV',
       'Truenat® Malaria Pv/Pf Hi Sens',
       'Truenat® Salmonella-FQ',
       'Truemix™ HPV-HR Plus',

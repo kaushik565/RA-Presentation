@@ -339,7 +339,7 @@ function App() {
   };
 
   const contentItems = [
-    { id: '01', title: 'Product License CLA/SLA', desc: 'Submitted, Approved, Inprocess, Queries, Products in pipeline', color: 'blue' },
+    { id: '01', title: 'Product License CLA/SLA', desc: 'Submitted, Approved, Queries, Products in pipeline', color: 'blue' },
     { id: '02', title: 'Global Registrations', desc: 'Countrywise product registration status (registered / ongoing)', color: 'red' },
     { id: '03', title: 'Technical Dossier', desc: 'Section-Wise schedule for WHO Technical Dossier (TD)', color: 'cyan' },
     { id: '04', title: 'Implementation', desc: 'IVDR 2017/746 implementation and Launch of regulatory update forum', color: 'yellow' },
@@ -348,7 +348,7 @@ function App() {
   ];
 
   const licensingSections = [
-    { id: 1, title: 'Approvals, Submission & Inprocess' },
+    { id: 1, title: 'Approvals & Submissions' },
     { id: 2, title: 'Inprocess Applications' },
     { id: 3, title: 'Products in Pipeline' },
     { id: 4, title: 'Manufacturing License Status' }
@@ -800,16 +800,6 @@ function App() {
     }, 0);
   };
 
-  // Inprocess Applications data
-  const inprocessData = [
-    { srNo: '01', type: 'Test license', product: 'Truenat® Dengue/Zika (Reapplication)', site: 'I', status: 'Awaiting CDSCO approved testing lab' },
-    { srNo: '02', type: 'Test license', product: 'Truenat® CHPV', site: 'I & V', status: 'No CDSCO approved predicate device' },
-    { srNo: '03', type: 'Manufacturing license', product: 'Truenat® KFDV', site: 'I', status: 'Approval of Form MD-29' },
-    { srNo: '04', type: 'New IVD', product: 'Truenat® KFDV', site: 'I', status: 'Clinical evaluation data on specimen collected from feild and statistically powered sample size' },
-    { srNo: '04', type: 'New IVD', product: 'Truenat® Inf A,B/COVID-19, Truenat® Nipah, Truenat® COVID-19, Truenat® SARS CoV-2, Truenat® Beta CoV & Truemix™ COVID-19', site: 'I', status: 'Recent Clinical evaluation data (last 1 year)' },
-    { srNo: '05', type: 'Condition Fulfillment', product: 'Truenat® MTB, Truenat® MTB Plus, Truenat® MTB RIF Dx, Truenat® HCV, Truenat® CT & Truenat® COVID-19', site: 'V', status: 'Stability study and PER for EPTB Sample as claimed in IFU' }
-  ];
-
   // Detail page data
   const licenseData = {
     approved: [
@@ -823,12 +813,68 @@ function App() {
       { category: 'Manufacturing license', siteI: '53 products', siteV: '14 products' },
       { category: 'Condition fulfillment', siteI: 'NA', siteV: '' },
       { category: 'Total', siteI: '57 products', siteV: '16 products' }
-    ],
-    inprocess: [
-      { category: 'Test license', siteI: '', siteV: '02 products' },
-      { category: 'Manufacturing license', siteI: '32 products', siteV: '10 products' },
-      { category: 'Condition fulfillment', siteI: 'NA', siteV: '' },
-      { category: 'Total', siteI: '32 products', siteV: '12 products' }
+    ]
+  };
+
+  // Inprocess Applications data
+  const inprocessData = {
+    counts: {
+      testLicenseResponded: 8,
+      testLicenseQuery: 3,
+      mfgLicenseResponded: 55,
+      mfgLicenseQuery: 1,
+      conditionResponded: 9,
+      conditionQuery: 6,
+      clinicalResponded: 1,
+      clinicalQuery: 0,
+      newIVDResponded: 0,
+      newIVDQuery: 7,
+      retentionResponded: 27,
+      retentionQuery: 0
+    },
+    table: [
+      {
+        no: '01',
+        type: 'Test license',
+        name: 'Truenat® Dengue/Zika (Reapplication)',
+        site: 'I',
+        status: 'Awaiting CDSCO approved testing lab'
+      },
+      {
+        no: '02',
+        type: 'Test license',
+        name: 'Truenat® CHPV',
+        site: 'I & V',
+        status: 'No CDSCO approved predicate device'
+      },
+      {
+        no: '03',
+        type: 'Manufacturing license',
+        name: 'Truenat® KFDV',
+        site: 'I',
+        status: 'Approval of Form MD-29'
+      },
+      {
+        no: '04',
+        type: 'New IVD',
+        name: 'Truenat® KFDV',
+        site: 'I',
+        status: 'Clinical evaluation data on specimen collected from feild and statistically powered sample size'
+      },
+      {
+        no: '05',
+        type: 'New IVD',
+        name: 'Truenat® Inf A,B/COVID-19, Truenat® Nipah, Truenat® COVID-19, Truenat® SARS CoV-2, Truenat® Beta CoV & Truemix™ COVID-19',
+        site: 'I',
+        status: 'Recent Clinical evaluation data (last 1 year)'
+      },
+      {
+        no: '06',
+        type: 'Condition Fulfillment',
+        name: 'Truenat® MTB, Truenat® MTB Plus, Truenat® MTB RIF Dx, Truenat® HCV, Truenat® CT & Truenat® COVID-19',
+        site: 'V',
+        status: 'Stability study and PER for EPTB Sample as claimed in IFU'
+      }
     ]
   };
 
@@ -850,27 +896,17 @@ function App() {
       'Truelyse™ Buffer'
     ],
     designFile: [
-      'Truemix™ HPV-HR16/18',
       'Truemix™ Zika / Dengue / Chikungunya',
-      'Truemix™ Beta CoV',
-      'Truemix™ SARS CoV-2',
       'Truemix™ Carb-R',
-      'Trueamp™ MDR-TB Plus',
       'Truemix™ BCR-ABL',
-      'Truemix™ MTB Plus',
-      'Truemix™ MTB-INH',
       'Truemix™ MTB Ultima',
       'Truemix™ Sepsis Panel',
       'Truemix™ Respiratory Panel',
       'Truebact™ MTB DST',
-      'Truemix™ MTB Rif Dx',
       'Truenat® HMPV / COVID-19 / Influenza',
       'Truenat® HMPV and M. pneumonia',
       'Truenat® H5N1',
       'Trueamp™ Respiratory Panel',
-      'Sickelcert™',
-      'Truedetect™',
-      'Truetell™/Promilless™ 0.03%',
       'Truenat® Syphilis'
     ],
     lotsNotTaken: [
@@ -1076,7 +1112,7 @@ function App() {
     {
       number: 1,
       title:
-        'To register Truenat® CT/NG, Truenat® MTB-INH, Truenat® HCV under IVD Regulation (EU) 2017/746',
+        'To register Truenat® CT/NG, Truenat® HCV under IVD Regulation (EU) 2017/746',
       indicators: [
         {
           name: 'Truenat® CT/NG under IVDR, 2017',
@@ -1217,8 +1253,8 @@ function App() {
     },
     {
       no: '04',
-      name: 'Truepoc',
-      desc: 'Integrated point-of-care NAAT platform',
+      name: 'Truepoc MTB',
+      desc: 'Rapid cartridge-based nucleic acid amplification test for detection of Mycobacterium Tuberculosis Complex (MTBc)',
       note: '(Application under process)'
     },
     {
@@ -1248,7 +1284,7 @@ function App() {
   ];
 
   if (showDetailPage && activeSection === 2) {
-    console.log('Rendering Inprocess page, activeSection:', activeSection);
+    console.log('Rendering Inprocess Applications page, activeSection:', activeSection);
     return (
       <div className="detailPage inprocessPage">
         <div className="detailHeader">
@@ -1266,35 +1302,35 @@ function App() {
             
             <div className="radiatingItem top">
               <h4>TEST LICENSE</h4>
-              <p>Query responded: 08</p>
-              <p>Under query: 03</p>
+              <p>Query responded: {inprocessData.counts.testLicenseResponded}</p>
+              <p>Under query: {inprocessData.counts.testLicenseQuery}</p>
             </div>
             
             <div className="radiatingItem topRight">
               <h4>MANUFACTURING LICENSE</h4>
-              <p>Query responded: 55</p>
-              <p>Under query: 01</p>
+              <p>Query responded: {inprocessData.counts.mfgLicenseResponded}</p>
+              <p>Under query: {inprocessData.counts.mfgLicenseQuery}</p>
             </div>
             
             <div className="radiatingItem right">
               <h4>CONDITION FULFILLMENT</h4>
-              <p>Query responded: 09</p>
-              <p>Under query: 06</p>
+              <p>Query responded: {inprocessData.counts.conditionResponded}</p>
+              <p>Under query: {inprocessData.counts.conditionQuery}</p>
             </div>
             
             <div className="radiatingItem bottomRight">
               <h4>CLINICAL INVESTIGATION</h4>
-              <p>Query responded: 01</p>
+              <p>Query responded: {inprocessData.counts.clinicalResponded}</p>
             </div>
             
             <div className="radiatingItem bottom">
               <h4>NEW IVD</h4>
-              <p>Under query: 07</p>
+              <p>Under query: {inprocessData.counts.newIVDQuery}</p>
             </div>
             
             <div className="radiatingItem left">
               <h4>RETENTION LICENSE</h4>
-              <p>Query responded: 27</p>
+              <p>Query responded: {inprocessData.counts.retentionResponded}</p>
             </div>
           </div>
 
@@ -1311,11 +1347,11 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {inprocessData.map((row, idx) => (
+                {inprocessData.table.map((row, idx) => (
                   <tr key={idx}>
-                    <td>{row.srNo}</td>
+                    <td>{row.no}</td>
                     <td>{row.type}</td>
-                    <td>{row.product}</td>
+                    <td>{row.name}</td>
                     <td>{row.site}</td>
                     <td>{row.status}</td>
                   </tr>
@@ -1519,7 +1555,7 @@ function App() {
       <div className="detailPage">
         <div className="detailHeader">
           <button className="backButton" onClick={handleBackToMain}>← Back</button>
-          <h1 className="detailTitle">1. Approvals, Submission & Inprocess (July 2025 - December 2025)</h1>
+          <h1 className="detailTitle">1. Approvals & Submissions (July 2025 - December 2025)</h1>
           <img src="/molbio-black-logo.png" alt="Molbio" className="detailLogo" />
         </div>
 
@@ -1533,28 +1569,12 @@ function App() {
                   {item.category}
                 </div>
               ))}
-            </div>
-
-            {/* Approved Column */}
-            <div className="dataColumn approved">
-              <div className="columnHeader">
-                <h3>Approved</h3>
-              </div>
-              {licenseData.approved.map((item, idx) => (
-                <div key={idx} className={`dataCell ${item.category === 'Total' ? 'total' : ''}`}>
-                  {item.siteI && <div className="siteData"><span className="siteName">Site I</span> - {item.siteI}</div>}
-                  {item.siteV && <div className="siteData"><span className="siteName">Site V</span> - {item.siteV}</div>}
-                  {!item.siteI && !item.siteV && <div className="siteData empty">-</div>}
-                </div>
-              ))}
               {licenseData.approved[licenseData.approved.length - 1].category === 'Total' && (
-                <div className="statusBadge">
-                  <img src="https://img.icons8.com/color/96/000000/checked--v1.png" alt="Approved" className="badgeIcon" />
-                </div>
+                <div className="categoryCell badgeCell"></div>
               )}
             </div>
 
-            {/* Submitted Column */}
+            {/* Submitted Column (first) */}
             <div className="dataColumn submitted">
               <div className="columnHeader">
                 <h3>Submitted</h3>
@@ -1568,28 +1588,27 @@ function App() {
                 </div>
               ))}
               {licenseData.submitted[licenseData.submitted.length - 1].category === 'Total' && (
-                <div className="statusBadge">
+                <div className="dataCell badgeCell">
                   <img src="/submitted image.jpg" alt="Submitted" className="badgeIcon" />
                 </div>
               )}
             </div>
 
-            {/* Inprocess Column */}
-            <div className="dataColumn inprocess">
+            {/* Approved Column (second) */}
+            <div className="dataColumn approved">
               <div className="columnHeader">
-                <h3>Inprocess</h3>
+                <h3>Approved</h3>
               </div>
-              {licenseData.inprocess.map((item, idx) => (
+              {licenseData.approved.map((item, idx) => (
                 <div key={idx} className={`dataCell ${item.category === 'Total' ? 'total' : ''}`}>
-                  {item.siteI && item.siteI !== 'NA' && <div className="siteData"><span className="siteName">Site I</span> - {item.siteI}</div>}
+                  {item.siteI && <div className="siteData"><span className="siteName">Site I</span> - {item.siteI}</div>}
                   {item.siteV && <div className="siteData"><span className="siteName">Site V</span> - {item.siteV}</div>}
-                  {item.siteI === 'NA' && <div className="siteData empty">NA</div>}
                   {!item.siteI && !item.siteV && <div className="siteData empty">-</div>}
                 </div>
               ))}
-              {licenseData.inprocess[licenseData.inprocess.length - 1].category === 'Total' && (
-                <div className="statusBadge">
-                  <img src="https://img.icons8.com/color/96/000000/in-progress.png" alt="Inprocess" className="badgeIcon" />
+              {licenseData.approved[licenseData.approved.length - 1].category === 'Total' && (
+                <div className="dataCell badgeCell">
+                  <img src="/Global regitrations/approved label.jpg" alt="Approved" className="badgeIcon" />
                 </div>
               )}
             </div>
@@ -1651,39 +1670,6 @@ function App() {
               <p className="productDate">July 2025 - December 2025</p>
             </div>
             
-            {/* KPI Overview Cards below the text */}
-            {showSections && (
-              <div className="plKpiOverview">
-                <div className="plKpiCard" style={{ animationDelay: '0.8s' }}>
-                  <div className="plKpiIcon">📋</div>
-                  <div className="plKpiContent">
-                    <div className="plKpiValue">24</div>
-                    <div className="plKpiLabel">Approvals & Submissions</div>
-                  </div>
-                </div>
-                <div className="plKpiCard" style={{ animationDelay: '0.95s' }}>
-                  <div className="plKpiIcon">⏳</div>
-                  <div className="plKpiContent">
-                    <div className="plKpiValue">12</div>
-                    <div className="plKpiLabel">Inprocess Applications</div>
-                  </div>
-                </div>
-                <div className="plKpiCard" style={{ animationDelay: '1.1s' }}>
-                  <div className="plKpiIcon">🔬</div>
-                  <div className="plKpiContent">
-                    <div className="plKpiValue">8</div>
-                    <div className="plKpiLabel">Products in Pipeline</div>
-                  </div>
-                </div>
-                <div className="plKpiCard" style={{ animationDelay: '1.25s' }}>
-                  <div className="plKpiIcon">✓</div>
-                  <div className="plKpiContent">
-                    <div className="plKpiValue">18</div>
-                    <div className="plKpiLabel">Manufacturing Licenses</div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
           
           {/* Section Navigation Buttons */}

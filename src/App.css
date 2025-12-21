@@ -832,12 +832,14 @@ textarea {
 
 .dataGrid {
     display: grid;
-    grid-template-columns: 200px 1fr 1fr 1fr;
+    grid-template-columns: 200px 1fr 1fr;
     gap: 2px;
     background: #e5e7eb;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
     overflow: hidden;
+    margin: 0 auto;
+    max-width: 1200px;
 }
 
 .categoryColumn {
@@ -848,14 +850,21 @@ textarea {
 
 .categoryCell {
     padding: 20px 15px;
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 600;
     color: #1f2937;
     background: white;
     display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     min-height: 80px;
     border-bottom: 2px solid #e5e7eb;
+}
+
+.categoryCell.badgeCell {
+    background: #f3f4f6;
+    border-bottom: none;
 }
 
 .categoryCell.header {
@@ -865,7 +874,7 @@ textarea {
 
 .categoryCell.total {
     background: #dbeafe;
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 700;
     color: #1e40af;
 }
@@ -914,6 +923,7 @@ textarea {
     min-height: 80px;
     justify-content: center;
     border-bottom: 2px solid #e5e7eb;
+    font-size: 17px;
 }
 
 .dataCell.total {
@@ -921,8 +931,14 @@ textarea {
     font-weight: 700;
 }
 
+.dataCell.badgeCell {
+    border-bottom: none;
+    align-items: center;
+    justify-content: center;
+}
+
 .siteData {
-    font-size: 14px;
+    font-size: 16px;
     color: #374151;
     line-height: 1.6;
 }
@@ -966,7 +982,7 @@ textarea {
 
 @media (max-width: 1024px) {
     .dataGrid {
-        grid-template-columns: 150px 1fr 1fr 1fr;
+        grid-template-columns: 150px 1fr 1fr;
     }
     .detailTitle {
         font-size: 24px;

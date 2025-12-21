@@ -9,6 +9,7 @@ import './App.css';
 // Critical images to preload for fast initial rendering
 const criticalImages = [
   '/molbio-black-logo.png',
+  '/anvisa.jpg',
   '/Global regitrations/01.png',
   '/Global regitrations/02.png',
   '/Global regitrations/03.png',
@@ -31,6 +32,7 @@ function App() {
   const contentsRef = useRef(null);
   const productLicensingRef = useRef(null);
   const globalRegistrationsRef = useRef(null);
+  const anvisaRef = useRef(null);
   const whoTechnicalRef = useRef(null);
   const qualityObjectivesRef = useRef(null);
   const implementationRef = useRef(null);
@@ -46,6 +48,7 @@ function App() {
   const [showEuropeTable, setShowEuropeTable] = useState(false);
   const [showWhoTimeline, setShowWhoTimeline] = useState(false);
   const [showGlobalRegAnimation, setShowGlobalRegAnimation] = useState(false);
+  const [showAnvisaSection, setShowAnvisaSection] = useState(false);
   const [showWhoImageOnly, setShowWhoImageOnly] = useState(false);
   const [showWhoContent, setShowWhoContent] = useState(false);
   const [activeWhoTimeline, setActiveWhoTimeline] = useState('mtbplus'); // 'mtbplus' or 'rifex'
@@ -160,6 +163,7 @@ function App() {
       contentsRef,
       productLicensingRef,
       globalRegistrationsRef,
+      anvisaRef,
       whoTechnicalRef,
       qualityObjectivesRef,
       implementationRef
@@ -172,7 +176,7 @@ function App() {
         const rect = section.getBoundingClientRect();
         if (rect.top <= 100 && rect.bottom >= 100) {
           // If in implementation section, step back through images/slides first
-          if (i === 6) {
+          if (i === 7) {
             if (currentImplImage === 4) {
               setCurrentImplImage(3);
               return;
@@ -199,7 +203,7 @@ function App() {
             }
           }
           // If in WHO section, step within timelines before leaving the section
-          if (i === 4) {
+          if (i === 5) {
             if (activeWhoTimeline === 'rifex') {
               // Go back to MTB Plus timeline
               setActiveWhoTimeline('mtbplus');
@@ -242,6 +246,7 @@ function App() {
       contentsRef,
       productLicensingRef,
       globalRegistrationsRef,
+      anvisaRef,
       whoTechnicalRef,
       qualityObjectivesRef,
       implementationRef
@@ -254,7 +259,7 @@ function App() {
         const rect = section.getBoundingClientRect();
         if (rect.top <= 100 && rect.bottom >= 100) {
           // If in implementation section, cycle through implementation steps/images
-          if (i === 6) {
+          if (i === 7) {
             if (currentImplImage === 1) {
               setCurrentImplImage(2);
               return;
@@ -288,7 +293,7 @@ function App() {
             setShowWhoTimeline(true);
           }
           // If in WHO section, advance within WHO before leaving
-          if (i === 4) {
+          if (i === 5) {
             if (whoNavLock) return;
             setWhoNavLock(true);
             setTimeout(() => setWhoNavLock(false), 400);
@@ -487,6 +492,7 @@ function App() {
         contentsRef,
         productLicensingRef,
         globalRegistrationsRef,
+        anvisaRef,
         whoTechnicalRef,
         qualityObjectivesRef,
         implementationRef
@@ -545,6 +551,7 @@ function App() {
         contentsRef,
         productLicensingRef,
         globalRegistrationsRef,
+        anvisaRef,
         whoTechnicalRef,
         qualityObjectivesRef,
         implementationRef
@@ -600,6 +607,11 @@ function App() {
 
   const scrollToGlobalRegistrations = () => {
     globalRegistrationsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+  };
+
+  const scrollToAnvisa = () => {
+    setShowAnvisaSection(true);
+    anvisaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   };
 
   const scrollToWhoTechnical = () => {
@@ -782,6 +794,33 @@ function App() {
     };
   }, []);
 
+  // ANVISA section animation observer
+  useEffect(() => {
+    const anvisaObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShowAnvisaSection(false);
+            setTimeout(() => {
+              setShowAnvisaSection(true);
+            }, 500);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (anvisaRef.current) {
+      anvisaObserver.observe(anvisaRef.current);
+    }
+
+    return () => {
+      if (anvisaRef.current) {
+        anvisaObserver.unobserve(anvisaRef.current);
+      }
+    };
+  }, []);
+
   const handleSectionClick = (sectionId) => {
     console.log('Clicked section:', sectionId);
     if (sectionId === 1 || sectionId === 2 || sectionId === 3 || sectionId === 4) {
@@ -931,6 +970,34 @@ function App() {
       'Truetell™/Promilless™ 0.0%'
     ]
   };
+
+  // ANVISA Registration Data (Brazil)
+  const anvisaRegisteredProducts = [
+    'STABILYSE® Prep Free',
+    'Trueprep® AUTO Transport Medium for Swab Specimen Pack',
+    'Trueprep® AUTO v2 Universal Cartridge Based Sample Prep Kit',
+    'Trueprep® AUTO Universal Cartridge Based Sample Prep Kit',
+    'Truenat® COVID-19',
+    'Truenat® Cholera',
+    'Truenat® HPV-HR',
+    'Trueprep® AUTO MTB Sample Pretreatment Pack',
+    'Truemix™ COVID-19',
+    'Trueprep® AUTO Universal Sample Pre-treatment Pack'
+  ];
+
+  const anvisaUnderRegistration = [
+    'Truelab® Uno Dx / Duo / Quattro',
+    'Trueprep® Auto v2',
+    'Truenat® Shigella',
+    'Truenat® Scrub T',
+    'Truenat® Salmonella',
+    'Truenat® MTB Rif Dx',
+    'Truenat® HLA-B27',
+    'Truenat® HEV',
+    'Truenat® GBS',
+    'Truenat® CT/NG',
+    'Truenat® MTB-INH'
+  ];
 
   // Global Registrations continents and countries
   const globalContinents = [
@@ -1657,7 +1724,9 @@ function App() {
       {/* Product Licensing Section */}
       <section className="productLicensingSection" ref={productLicensingRef}>
         <div className="productHeader">
-          <img src="/molbio-black-logo.png" alt="Molbio" className="headerLogo" />
+          <div className="logoContainer">
+            <img src="/molbio-black-logo.png" alt="Molbio" className="headerLogo" />
+          </div>
         </div>
         <div className={`productLicensingLayout ${showSections ? 'splitView' : ''}`}>
           <div className="productLeftColumn">
@@ -1694,7 +1763,9 @@ function App() {
         {!showGlobalRegAnimation && (
           <div className="grCentered">
             <div className="grHeaderLogo">
-              <img src="/molbio-black-logo.png" alt="Molbio" className="headerLogo" />
+              <div className="logoContainer">
+                <img src="/molbio-black-logo.png" alt="Molbio" className="headerLogo" />
+              </div>
             </div>
             <h1 className="grTitle">Global Registrations</h1>
             <p className="grDate">July 2025 - December 2025</p>
@@ -1710,7 +1781,9 @@ function App() {
                 <h1 className="grTitleHeader">Global Registrations</h1>
                 <p className="grDateHeader">July 2025 - December 2025</p>
               </div>
-              <img src="/molbio-black-logo.png" alt="Molbio" className="grHeaderLogo" />
+              <div className="logoContainer">
+                <img src="/molbio-black-logo.png" alt="Molbio" className="grHeaderLogo" />
+              </div>
             </div>
             
             {/* Divider */}
@@ -1867,24 +1940,82 @@ function App() {
                   </table>
                 </div>
               )}
-              
-              {/* Next button to WHO Technical Dossier - only show at last image */}
-              {currentGlobalImage === 6 && (
-                <button className="whoNextBtn" onClick={scrollToWhoTechnical}>
-                  NEXT
-                </button>
-              )}
               </div>
             </div>
           </div>
         )}
       </section>
 
+      {/* ANVISA Registration Section (Brazil) */}
+      <section className={showAnvisaSection ? "anvisaSection animated" : "anvisaSection"} ref={anvisaRef}>
+        <div className="anvisaContainer">
+          {/* Header */}
+          <div className="anvisaHeader">
+            <div className="anvisaLogoContainer">
+              <img src="/anvisa.jpg" alt="ANVISA" className="anvisaHeaderLogo" />
+            </div>
+            <div className="anvisaTitleContainer">
+              <h1 className="anvisaTitle">ANVISA REGISTRATION (Brazil)</h1>
+            </div>
+            <div className="anvisaLogoContainer">
+              <img src="/molbio-black-logo.png" alt="Molbio" className="anvisaHeaderLogo" />
+            </div>
+          </div>
+
+          {/* Content with Two Tables */}
+          <div className="anvisaContent">
+            {/* Left Table - Products Registered */}
+            <div className="anvisaTableWrapper">
+              <h2 className="anvisaTableTitle">Products Registered</h2>
+              <table className="anvisaTable">
+                <thead>
+                  <tr>
+                    <th className="anvisaSrNo">Sr. No</th>
+                    <th className="anvisaProduct">Products</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {anvisaRegisteredProducts.map((product, idx) => (
+                    <tr key={idx}>
+                      <td className="anvisaSrNo">{idx + 1}</td>
+                      <td className="anvisaProduct">{product}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Right Table - Under Registration */}
+            <div className="anvisaTableWrapper">
+              <h2 className="anvisaTableTitle">Under Registration</h2>
+              <table className="anvisaTable">
+                <thead>
+                  <tr>
+                    <th className="anvisaSrNo">Sr. No</th>
+                    <th className="anvisaProduct">Products</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {anvisaUnderRegistration.map((product, idx) => (
+                    <tr key={idx}>
+                      <td className="anvisaSrNo">{idx + 1}</td>
+                      <td className="anvisaProduct">{product}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* WHO Technical Dossier Section */}
       <section className={showWhoTimeline ? "whoTechnicalSection animated" : "whoTechnicalSection"} ref={whoTechnicalRef}>
         <div className="whoTechnicalContainer">
           <div className={showWhoTimeline ? "whoTechnicalHeader animated" : "whoTechnicalHeader"}>
-            <img src="/molbio-black-logo.png" alt="Molbio" className="whoHeaderLogo" />
+            <div className="logoContainer">
+              <img src="/molbio-black-logo.png" alt="Molbio" className="whoHeaderLogo" />
+            </div>
             <h1 className="whoTechnicalTitle">WHO Technical dossier</h1>
             <p className="whoTechnicalSubtitle">Section-Wise Schedule for Technical dossier(TD) and Related documents</p>
           </div>
@@ -2040,7 +2171,6 @@ function App() {
                   </div>
                 </div>
               )}
-              {/* Removed internal next button to enforce global navigation only */}
               </>
               )}
             </div>
@@ -2058,7 +2188,9 @@ function App() {
           )}
           {!showQualityFlash && (
             <>
-            <img src="/molbio-black-logo.png" alt="Molbio" className="qualityHeaderLogo" />
+            <div className="logoContainer">
+              <img src="/molbio-black-logo.png" alt="Molbio" className="qualityHeaderLogo" />
+            </div>
           <div className="qualityObjectivesHeader">
             <h1 className="qualityObjectivesTitle">Quality Objectives — 2025</h1>
           </div>
@@ -2180,7 +2312,9 @@ function App() {
       <section className={`implementationSection ${showImplMain ? 'active' : ''}`} ref={implementationRef}>
         {/* Top-right logo when main view is active */}
         {showImplMain && (
-          <img src="/molbio-black-logo.png" alt="Molbio" className="implTopRightLogo" />
+          <div className="logoContainer implLogoContainer">
+            <img src="/molbio-black-logo.png" alt="Molbio" className="implTopRightLogo" />
+          </div>
         )}
 
         {/* Centered splash for 0.5s */}

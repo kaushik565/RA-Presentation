@@ -1190,7 +1190,7 @@ function App() {
           name: 'Truenat® HCV under IVDR, 2017',
           tasks: [
             { id: 'T1', name: 'Technical Dossier preparation', allocated: 70, status: 'Ongoing', completed: 75 },
-            { id: 'T2', name: 'Technical Dossier review by stakeholders', allocated: 15, status: 'Ongoing', completed: 0 },
+            { id: 'T2', name: 'Technical Dossier review by stakeholders', allocated: 15, status: 'Ongoing', completed: 60 },
             { id: 'T3', name: 'Technical Dossier submission to Notified Body', allocated: 15, status: 'Ongoing', completed: 0 },
           ],
         },
@@ -1962,48 +1962,64 @@ function App() {
             </div>
           </div>
 
+          {/* KPI Cards */}
+          <div className="anvisaKpiContainer">
+            <div className="anvisaKpiCard">
+              <div className="anvisaKpiValue">{anvisaRegisteredProducts.length}</div>
+              <div className="anvisaKpiLabel">Products Registered</div>
+            </div>
+            <div className="anvisaKpiCard">
+              <div className="anvisaKpiValue">{anvisaUnderRegistration.length}</div>
+              <div className="anvisaKpiLabel">Under Registration</div>
+            </div>
+          </div>
+
           {/* Content with Two Tables */}
           <div className="anvisaContent">
             {/* Left Table - Products Registered */}
             <div className="anvisaTableWrapper">
               <h2 className="anvisaTableTitle">Products Registered</h2>
-              <table className="anvisaTable">
-                <thead>
-                  <tr>
-                    <th className="anvisaSrNo">Sr. No</th>
-                    <th className="anvisaProduct">Products</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {anvisaRegisteredProducts.map((product, idx) => (
-                    <tr key={idx}>
-                      <td className="anvisaSrNo">{idx + 1}</td>
-                      <td className="anvisaProduct">{product}</td>
+              <div className="anvisaTableContainer">
+                <table className="anvisaTable">
+                  <thead>
+                    <tr>
+                      <th className="anvisaSrNo">Sr. No</th>
+                      <th className="anvisaProduct">Products</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {anvisaRegisteredProducts.map((product, idx) => (
+                      <tr key={idx}>
+                        <td className="anvisaSrNo">{idx + 1}</td>
+                        <td className="anvisaProduct">{product}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Right Table - Under Registration */}
             <div className="anvisaTableWrapper">
               <h2 className="anvisaTableTitle">Under Registration</h2>
-              <table className="anvisaTable">
-                <thead>
-                  <tr>
-                    <th className="anvisaSrNo">Sr. No</th>
-                    <th className="anvisaProduct">Products</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {anvisaUnderRegistration.map((product, idx) => (
-                    <tr key={idx}>
-                      <td className="anvisaSrNo">{idx + 1}</td>
-                      <td className="anvisaProduct">{product}</td>
+              <div className="anvisaTableContainer">
+                <table className="anvisaTable">
+                  <thead>
+                    <tr>
+                      <th className="anvisaSrNo">Sr. No</th>
+                      <th className="anvisaProduct">Products</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {anvisaUnderRegistration.map((product, idx) => (
+                      <tr key={idx}>
+                        <td className="anvisaSrNo">{idx + 1}</td>
+                        <td className="anvisaProduct">{product}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -2165,6 +2181,8 @@ function App() {
                           <li><span className="whoTaskBullet"></span>Review of Pack insert (Intended)</li>
                           <li><span className="whoTaskBullet"></span>Preparation of Risk documents</li>
                           <li><span className="whoTaskBullet"></span>Compilation of annexures</li>
+                          <li><span className="whoTaskBullet"></span>LOA received</li>
+                          <li><span className="whoTaskBullet"></span>The invoice is sent to the accounts team for payment, once the payment is completed and a swift copy is received, the complete Technical dossier will be aligned and all the linkages will be provided.</li>
                         </ul>
                       </div>
                     </div>

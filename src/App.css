@@ -2833,6 +2833,50 @@ textarea {
     letter-spacing: 1px;
 }
 
+.anvisaKpiContainer {
+    display: flex;
+    gap: 30px;
+    padding: 30px 60px 0;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.anvisaSection.animated .anvisaKpiContainer {
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.anvisaKpiCard {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border-radius: 10px;
+    padding: 18px 30px;
+    min-width: 160px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.anvisaKpiCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(220, 38, 38, 0.35);
+}
+
+.anvisaKpiValue {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+    line-height: 1;
+}
+
+.anvisaKpiLabel {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .anvisaContent {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2851,6 +2895,7 @@ textarea {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    max-height: 500px;
 }
 
 .anvisaTableTitle {
@@ -2861,6 +2906,29 @@ textarea {
     padding: 16px 20px;
     margin: 0;
     text-align: center;
+    flex-shrink: 0;
+}
+
+.anvisaTableContainer {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.anvisaTableContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.anvisaTableContainer::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+.anvisaTableContainer::-webkit-scrollbar-thumb {
+    background: #dc2626;
+    border-radius: 4px;
+}
+
+.anvisaTableContainer::-webkit-scrollbar-thumb:hover {
+    background: #b91c1c;
 }
 
 .anvisaTable {
@@ -4430,6 +4498,7 @@ textarea {
     gap: 10px;
     align-items: flex-start;
     font-weight: 500;
+    text-align: left;
 }
 
 .whoPhaseTasksListHorizontal.compact li {

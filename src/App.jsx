@@ -935,7 +935,6 @@ function App() {
       'Truemix™ Zika / Dengue / Chikungunya',
       'Truemix™ Carb-R',
       'Truemix™ BCR-ABL',
-      'Truemix™ MTB Ultima',
       'Truemix™ Sepsis Panel',
       'Truemix™ Respiratory Panel',
       'Truebact™ MTB DST',

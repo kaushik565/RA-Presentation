@@ -46,11 +46,11 @@ function App() {
   const [showNorthAmericaTable, setShowNorthAmericaTable] = useState(false);
   const [showSouthAmericaTable, setShowSouthAmericaTable] = useState(false);
   const [showEuropeTable, setShowEuropeTable] = useState(false);
-  const [showWhoTimeline, setShowWhoTimeline] = useState(false);
-  const [showGlobalRegAnimation, setShowGlobalRegAnimation] = useState(false);
-  const [showAnvisaSection, setShowAnvisaSection] = useState(false);
+  const [showWhoTimeline, setShowWhoTimeline] = useState(true);
+  const [showGlobalRegAnimation, setShowGlobalRegAnimation] = useState(true);
+  const [showAnvisaSection, setShowAnvisaSection] = useState(true);
   const [showWhoImageOnly, setShowWhoImageOnly] = useState(false);
-  const [showWhoContent, setShowWhoContent] = useState(false);
+  const [showWhoContent, setShowWhoContent] = useState(true);
   const [activeWhoTimeline, setActiveWhoTimeline] = useState('mtbplus'); // 'mtbplus' or 'rifex'
   const [whoNavLock, setWhoNavLock] = useState(false);
   const [showQualityFlash, setShowQualityFlash] = useState(false);
@@ -58,10 +58,10 @@ function App() {
   const [showQualityDetail, setShowQualityDetail] = useState(false);
   const [showBackButton, setShowBackButton] = useState(false);
   const [showImplIntro, setShowImplIntro] = useState(false);
-  const [showImplMain, setShowImplMain] = useState(false);
+  const [showImplMain, setShowImplMain] = useState(true);
   const [currentImplImage, setCurrentImplImage] = useState(1); // 1: implementation1, 2: implementation2, 3: certifications slide
   const [showCertIntro, setShowCertIntro] = useState(false);
-  const [showCertMain, setShowCertMain] = useState(false);
+  const [showCertMain, setShowCertMain] = useState(true);
   const heroRef = useRef(null);
   const fullscreenTargetRef = useRef(null);
 
